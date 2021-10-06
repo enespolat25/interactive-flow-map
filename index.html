@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <title>JavaScript Flow Map</title>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-map.min.js"></script>
+
+    <script src="https://cdn.anychart.com/geodata/latest/custom/world/world.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
+
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
+
+    <style type="text/css">      
+      html, body, #container { 
+        width: 100%; height: 100%; margin: 0; padding: 0; 
+      } 
+    </style>
+  </head>
+  <body>  
+    <div id="container"></div>
+    <script>
+      anychart.data.loadJsonFile('https://gist.githubusercontent.com/shacheeswadia/a20ba5b62cef306ccc1a8e8857e5316a/raw/0337b16fa8dc4de97263bc0a4ededf935a529c35/migration-data.json', function (data) {
+        // The JS flow map's code will come here
+        anychart.onDocumentReady(function () {
+  anychart.data.loadJsonFile(    'https://gist.githubusercontent.com/shacheeswadia/a20ba5b62cef306ccc1a8e8857e5316a/raw/0337b16fa8dc4de97263bc0a4ededf935a529c35/migration-data.json',
+    function (data) {
+      // Creates map chart
+      var map = anychart.connector();
+
+      // Sets settings for map chart
+      map.geoData('anychart.maps.world');
+
+      // Darkens all the regions
+      map
+        .unboundRegions()
+        .enabled(true)
+        .fill('#E1E1E1')
+        .stroke('#D2D2D2');
+
+      // Sets title for map chart 
+      map
+        .title("ABD'ye Göç Veren İlk 15 Ülke");
+    
+      // Display all labels even if there is an overlap
+      map. 
+        overlapMode("allow-overlap");
+
+      // Helper function to create several series
+      var createSeries = function (data) {
+        
+        // Creates connector series and customizes them
+        var connectorSeries = map
+          .connector(data);
+        
+        connectorSeries
+          .markers()
+          .position('100%')
+          .size(10);
+        
+        // Sets labels for the source countries
+        connectorSeries
+          .labels()
+          .enabled(true)
+          .format(function () {
+            return this.getData('from');
+          });
+        
+      };
+
+      // Creates Dataset from the data
+      var dataSet = anychart.data.set(data).mapAs();
+
+      createSeries(dataSet);
+
+      // Sets container id for the chart
+      map.container('container');
+
+      // Initiates chart drawing
+      map.draw();
+    }
+  );
+});
+        
+      });
+    </script>
+  </body>
+</html>
